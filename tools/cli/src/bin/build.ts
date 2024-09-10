@@ -35,7 +35,7 @@ const getChannel = () => {
 
 let entry: string | undefined;
 
-const { DISTRIBUTION } = process.env;
+const { DISTRIBUTION = 'web' } = process.env;
 
 const getDistribution = () => {
   switch (DISTRIBUTION) {

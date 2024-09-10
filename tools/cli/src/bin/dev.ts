@@ -13,7 +13,7 @@ import { createWebpackConfig } from '../webpack/webpack.config.js';
 
 const flags: BuildFlags = {
   distribution:
-    (process.env.DISTRIBUTION as BuildFlags['distribution']) ?? 'browser',
+    (process.env.DISTRIBUTION as BuildFlags['distribution']) ?? 'web',
   mode: 'development',
   channel: 'canary',
   coverage: process.env.COVERAGE === 'true',
@@ -41,13 +41,13 @@ const buildFlags = process.argv.includes('--static')
             message: 'Distribution',
             options: [
               {
-                value: 'browser',
+                value: 'web',
               },
               {
                 value: 'desktop',
               },
             ],
-            initialValue: 'browser',
+            initialValue: 'web',
           }),
         mode: () =>
           p.select({

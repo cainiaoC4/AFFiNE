@@ -37,9 +37,10 @@ export default {
         'process.env.TRACE_REPORT_ENDPOINT': `"${process.env.TRACE_REPORT_ENDPOINT}"`,
         'process.env.CAPTCHA_SITE_KEY': `"${process.env.CAPTCHA_SITE_KEY}"`,
         runtimeConfig: getRuntimeConfig({
-          distribution: 'browser',
+          distribution: 'web',
           mode: 'development',
           channel: 'canary',
+          static: false,
           coverage: false,
         }),
       },

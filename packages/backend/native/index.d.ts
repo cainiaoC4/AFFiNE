@@ -3,6 +3,8 @@
 
 export function getMime(input: Uint8Array): string
 
+export declare function htmlSanitize(input: string): string
+
 /**
  * Merge updates in form like `Y.applyUpdate(doc, update)` way and return the
  * result binary.
