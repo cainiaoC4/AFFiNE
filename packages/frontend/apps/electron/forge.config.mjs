@@ -10,6 +10,7 @@ import {
   arch,
   buildType,
   icnsPath,
+  iconPngPath,
   iconUrl,
   iconX64PngPath,
   icoPath,
@@ -86,6 +87,33 @@ const makers = [
           size: 64,
         },
       ],
+    },
+  },
+  !process.env.SKIP_BUNDLE && {
+    name: '@electron-forge/maker-snap',
+    platforms: ['linux'],
+    /** @type {import('@electron-forge/maker-snap').MakerSnapConfig} */
+    config: {
+      grade: buildType === 'stable' ? 'stable' : 'devel',
+      features: {
+        webgl: true,
+      },
+      base: 'core22',
+    },
+  },
+  !process.env.SKIP_BUNDLE && {
+    name: '@electron-forge/maker-flatpak',
+    platforms: ['linux'],
+    /** @type {import('@electron-forge/maker-flatpak').MakerFlatpakConfig} */
+    config: {
+      options: {
+        mimeType: ['x-scheme-handler/affine'],
+        productName,
+        bin: productName,
+        id: fromBuildIdentifier(appIdMap),
+        icon: iconPngPath,
+        branch: buildType,
+      },
     },
   },
 ].filter(Boolean);
