@@ -1,5 +1,5 @@
 import { Loading } from '@affine/component/ui/loading';
-import { i18nTime, isI18nString, useI18n } from '@affine/i18n';
+import { i18nTime, useI18n } from '@affine/i18n';
 import clsx from 'clsx';
 import { Command } from 'cmdk';
 import {
@@ -232,12 +232,14 @@ export const CMDKGroup = ({
       style={{ overflowAnchor: 'none' }}
     >
       {items.map(item => {
-        const title = !isI18nString(item.label)
-          ? i18n.t(item.label.title)
-          : i18n.t(item.label);
-        const subTitle = !isI18nString(item.label)
-          ? item.label.subTitle && i18n.t(item.label.subTitle)
-          : null;
+        const [title, subTitle] =
+          typeof item.label === 'string'
+            ? [i18n.t(item.label), null]
+            : [
+                i18n.t(item.label.title),
+                item.label.subTitle ? i18n.t(item.label.subTitle) : null,
+              ];
+
         return (
           <Command.Item
             key={item.id}
