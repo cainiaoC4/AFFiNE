@@ -3,15 +3,15 @@ use std::sync::{Arc, RwLock};
 
 use napi::{bindgen_prelude::*, Env};
 use napi_derive::napi;
-use pdfium_render::prelude::{PdfDocument as PdfDocumentInner, Pdfium};
+use pdfium_render::prelude::{PdfDocument, Pdfium};
 
-use crate::PdfDocument;
+use crate::Document;
 
-struct PdfViewerInner {
+struct ViewerInner {
   engine: Pdfium,
 }
 
-impl PdfViewerInner {
+impl ViewerInner {
   fn new() -> Result<Self> {
     Self::bind_to_library("./".to_string())
   }
@@ -26,7 +26,7 @@ impl PdfViewerInner {
     Ok(Self { engine })
   }
 
-  fn open<'a>(&'a self, bytes: Vec<u8>, password: Option<&str>) -> Result<PdfDocumentInner<'a>> {
+  fn open<'a>(&'a self, bytes: Vec<u8>, password: Option<&str>) -> Result<PdfDocument<'a>> {
     self
       .engine
       .load_pdf_from_byte_vec(bytes, password)
@@ -35,21 +35,21 @@ impl PdfViewerInner {
 }
 
 #[napi]
-pub struct PdfViewer {
-  inner: PdfViewerInner,
-  docs: Arc<RwLock<HashMap<String, PdfDocument>>>,
+pub struct Viewer {
+  inner: ViewerInner,
+  docs: Arc<RwLock<HashMap<String, Document>>>,
 }
 
 #[napi]
-impl PdfViewer {
-  fn get_ref(&self) -> &PdfViewerInner {
+impl Viewer {
+  fn get_ref(&self) -> &ViewerInner {
     &self.inner
   }
 
   #[napi(constructor)]
   pub fn new() -> Result<Self> {
     Ok(Self {
-      inner: PdfViewerInner::new()?,
+      inner: ViewerInner::new()?,
       docs: Default::default(),
     })
   }
@@ -57,13 +57,13 @@ impl PdfViewer {
   #[napi]
   pub fn bind_to_library(path: String) -> Result<Self> {
     Ok(Self {
-      inner: PdfViewerInner::bind_to_library(path)?,
+      inner: ViewerInner::bind_to_library(path)?,
       docs: Default::default(),
     })
   }
 
   #[napi]
-  pub fn open_with_id(&self, env: Env, id: String) -> Option<PdfDocument> {
+  pub fn open_with_id(&self, env: Env, id: String) -> Option<Document> {
     let docs = self.docs.read().ok()?;
 
     docs.get(&id).and_then(|doc| doc.clone(env).ok())
@@ -72,12 +72,12 @@ impl PdfViewer {
   #[napi]
   pub fn open(
     &self,
-    reference: Reference<PdfViewer>,
+    reference: Reference<Viewer>,
     env: Env,
     id: String,
     bytes: Buffer,
     password: Option<&str>,
-  ) -> Option<PdfDocument> {
+  ) -> Option<Document> {
     let result = self.open_with_id(env, id.clone());
 
     if result.is_some() {
@@ -90,7 +90,7 @@ impl PdfViewer {
       })
       .ok()?;
 
-    let doc = PdfDocument::new(inner);
+    let doc = Document::new(inner);
 
     let mut docs = self.docs.write().ok()?;
 

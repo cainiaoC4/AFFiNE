@@ -361,8 +361,9 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`);
 }
 
-module.exports.PdfDocument = nativeBinding.PdfDocument;
-module.exports.PdfPage = nativeBinding.PdfPage;
-module.exports.PdfPages = nativeBinding.PdfPages;
-module.exports.PdfViewer = nativeBinding.PdfViewer;
+module.exports.Document = nativeBinding.Document;
+module.exports.Page = nativeBinding.Page;
+module.exports.Pages = nativeBinding.Pages;
+module.exports.Rect = nativeBinding.Rect;
+module.exports.Viewer = nativeBinding.Viewer;
 module.exports.Rotation = nativeBinding.Rotation;

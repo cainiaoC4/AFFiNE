@@ -23,6 +23,7 @@
     "@blocksuite/affine": "0.17.17",
     "@napi-rs/cli": "3.0.0-alpha.62",
     "@types/node": "^20.12.7",
+    "jimp": "^1.6.0",
     "typescript": "^5.4.5",
     "vitest": "2.1.1"
   },

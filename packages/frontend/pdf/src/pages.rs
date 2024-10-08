@@ -1,23 +1,23 @@
 use napi::{bindgen_prelude::*, Env};
 use napi_derive::napi;
-use pdfium_render::prelude::PdfPages as PdfPagesInner;
+use pdfium_render::prelude::PdfPages;
 
-use crate::{PdfDocument, PdfPage};
+use crate::{Document, Page};
 
 #[napi]
-pub struct PdfPages {
-  inner: SharedReference<PdfDocument, &'static PdfPagesInner<'static>>,
+pub struct Pages {
+  inner: SharedReference<Document, &'static PdfPages<'static>>,
 }
 
 #[napi]
-impl PdfPages {
-  pub fn new(reference: Reference<PdfDocument>, env: Env) -> Result<Self> {
+impl Pages {
+  pub fn new(reference: Reference<Document>, env: Env) -> Result<Self> {
     Ok(Self {
       inner: reference.share_with(env, |doc| Ok(doc.get_ref().pages()))?,
     })
   }
 
-  pub fn get_ref(&self) -> &PdfPagesInner<'_> {
+  pub fn get_ref(&self) -> &PdfPages<'_> {
     &*self.inner
   }
 
@@ -27,7 +27,7 @@ impl PdfPages {
   }
 
   #[napi]
-  pub fn get(&self, reference: Reference<PdfPages>, env: Env, index: u16) -> Option<PdfPage> {
+  pub fn get(&self, reference: Reference<Pages>, env: Env, index: u16) -> Option<Page> {
     reference
       .share_with(env, |pages| {
         pages
@@ -35,7 +35,7 @@ impl PdfPages {
           .get(index)
           .map_err(|e| Error::from_reason(e.to_string()))
       })
-      .map(PdfPage::new)
+      .map(Page::new)
       .ok()
   }
 }

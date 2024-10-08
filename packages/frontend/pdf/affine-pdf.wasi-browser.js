@@ -54,17 +54,20 @@ const {
 
 function __napi_rs_initialize_modules(__napiInstance) {
   __napiInstance.exports['__napi_register__Rotation_0']?.();
-  __napiInstance.exports['__napi_register__PdfDocument_struct_1']?.();
-  __napiInstance.exports['__napi_register__PdfDocument_impl_3']?.();
-  __napiInstance.exports['__napi_register__PdfPage_struct_4']?.();
-  __napiInstance.exports['__napi_register__PdfPage_impl_7']?.();
-  __napiInstance.exports['__napi_register__PdfPages_struct_8']?.();
-  __napiInstance.exports['__napi_register__PdfPages_impl_11']?.();
-  __napiInstance.exports['__napi_register__PdfViewer_struct_12']?.();
-  __napiInstance.exports['__napi_register__PdfViewer_impl_18']?.();
+  __napiInstance.exports['__napi_register__Document_struct_1']?.();
+  __napiInstance.exports['__napi_register__Document_impl_3']?.();
+  __napiInstance.exports['__napi_register__Page_struct_4']?.();
+  __napiInstance.exports['__napi_register__Page_impl_9']?.();
+  __napiInstance.exports['__napi_register__Pages_struct_10']?.();
+  __napiInstance.exports['__napi_register__Pages_impl_13']?.();
+  __napiInstance.exports['__napi_register__Viewer_struct_14']?.();
+  __napiInstance.exports['__napi_register__Viewer_impl_20']?.();
+  __napiInstance.exports['__napi_register__Rect_struct_21']?.();
+  __napiInstance.exports['__napi_register__Rect_impl_28']?.();
 }
-export const PdfDocument = __napiModule.exports.PdfDocument;
-export const PdfPage = __napiModule.exports.PdfPage;
-export const PdfPages = __napiModule.exports.PdfPages;
-export const PdfViewer = __napiModule.exports.PdfViewer;
+export const Document = __napiModule.exports.Document;
+export const Page = __napiModule.exports.Page;
+export const Pages = __napiModule.exports.Pages;
+export const Rect = __napiModule.exports.Rect;
+export const Viewer = __napiModule.exports.Viewer;
 export const Rotation = __napiModule.exports.Rotation;
