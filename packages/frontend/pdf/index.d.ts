@@ -32,7 +32,7 @@ export declare class PdfViewer {
 
 export declare const enum Rotation {
   Zero = 0,
-  One = 1,
-  Two = 2,
-  Three = 3,
+  Quarter = 1,
+  Half = 2,
+  ThreeQuarters = 3,
 }

@@ -4,18 +4,18 @@ use pdfium_render::prelude::PdfPageRenderRotation;
 #[napi]
 pub enum Rotation {
   Zero,
-  One,
-  Two,
-  Three,
+  Quarter,
+  Half,
+  ThreeQuarters,
 }
 
 impl Into<PdfPageRenderRotation> for Rotation {
   fn into(self) -> PdfPageRenderRotation {
     match self {
       Self::Zero => PdfPageRenderRotation::None,
-      Self::One => PdfPageRenderRotation::Degrees90,
-      Self::Two => PdfPageRenderRotation::Degrees180,
-      Self::Three => PdfPageRenderRotation::Degrees270,
+      Self::Quarter => PdfPageRenderRotation::Degrees90,
+      Self::Half => PdfPageRenderRotation::Degrees180,
+      Self::ThreeQuarters => PdfPageRenderRotation::Degrees270,
     }
   }
 }

@@ -34,7 +34,7 @@ impl PdfPage {
     self
       .inner
       .render(width, height, rotation.map(Into::into))
-      .ok()
       .map(|bitmap| Uint8ClampedArray::from(bitmap.as_rgba_bytes()))
+      .ok()
   }
 }

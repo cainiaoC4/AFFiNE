@@ -35,7 +35,7 @@ impl PdfPages {
           .get(index)
           .map_err(|e| Error::from_reason(e.to_string()))
       })
-      .ok()
       .map(PdfPage::new)
+      .ok()
   }
 }
