@@ -5,7 +5,6 @@ import { net, protocol, session } from 'electron';
 import { CLOUD_BASE_URL } from './config';
 import { logger } from './logger';
 import { isOfflineModeEnabled } from './utils';
-import { getCookies } from './windows-manager';
 
 protocol.registerSchemesAsPrivileged([
   {
@@ -41,38 +40,32 @@ function isNetworkResource(pathname: string) {
   return NETWORK_REQUESTS.some(opt => pathname.startsWith(opt));
 }
 
-async function handleFileRequest(request: Request) {
-  const clonedRequest = Object.assign(request.clone(), {
-    bypassCustomProtocolHandlers: true,
-  });
-  const urlObject = new URL(request.url);
-  if (isNetworkResource(urlObject.pathname)) {
-    // just pass through (proxy)
-    return net.fetch(
-      CLOUD_BASE_URL + urlObject.pathname + urlObject.search,
-      clonedRequest
-    );
-  } else {
+async function handleHttpRequest(request: Request) {
+  const url = new URL(request.url);
+  const pathname = url.pathname;
+  const sameSite = url.host === new URL(CLOUD_BASE_URL).host;
+
+  const isStaticResource = sameSite && !isNetworkResource(pathname);
+  if (isStaticResource) {
     // this will be file types (in the web-static folder)
     let filepath = '';
     // if is a file type, load the file in resources
-    if (urlObject.pathname.split('/').at(-1)?.includes('.')) {
-      filepath = join(webStaticDir, decodeURIComponent(urlObject.pathname));
+    if (pathname.split('/').at(-1)?.includes('.')) {
+      filepath = join(webStaticDir, decodeURIComponent(pathname));
     } else {
       // else, fallback to load the index.html instead
       filepath = join(webStaticDir, 'index.html');
     }
-    return net.fetch('file://' + filepath, clonedRequest);
+    return net.fetch('file://' + filepath, request);
   }
+  return net.fetch(request);
 }
 
 export function registerProtocol() {
-  protocol.handle('file', request => {
-    return handleFileRequest(request);
-  });
+  const isSecure = CLOUD_BASE_URL.startsWith('https://');
 
-  protocol.handle('assets', request => {
-    return handleFileRequest(request);
+  protocol.handle(isSecure ? 'https' : 'http', request => {
+    return handleHttpRequest(request);
   });
 
   // hack for CORS
@@ -110,11 +103,8 @@ export function registerProtocol() {
     const protocol = url.protocol;
     const origin = url.origin;
 
-    const sameSite =
-      url.host === new URL(CLOUD_BASE_URL).host || protocol === 'file:';
-
     // offline whitelist
-    // 1. do not block non-api request for http://localhost || file:// (local dev assets)
+    // 1. do not block non-api request for http://localhost
     // 2. do not block devtools
     // 3. block all other requests
     const blocked = (() => {
@@ -122,7 +112,7 @@ export function registerProtocol() {
         return false;
       }
       if (
-        (protocol === 'file:' || origin.startsWith('http://localhost')) &&
+        origin.startsWith('http://localhost') &&
         !isNetworkResource(pathname)
       ) {
         return false;
@@ -141,19 +131,6 @@ export function registerProtocol() {
       return;
     }
 
-    // session cookies are set to file:// on production
-    // if sending request to the cloud, attach the session cookie (to affine cloud server)
-    if (isNetworkResource(pathname) && sameSite) {
-      const cookie = getCookies();
-      if (cookie) {
-        const cookieString = cookie.map(c => `${c.name}=${c.value}`).join('; ');
-        details.requestHeaders['cookie'] = cookieString;
-      }
-
-      // add the referer and origin headers
-      details.requestHeaders['referer'] ??= CLOUD_BASE_URL;
-      details.requestHeaders['origin'] ??= CLOUD_BASE_URL;
-    }
     callback({
       cancel: false,
       requestHeaders: details.requestHeaders,
