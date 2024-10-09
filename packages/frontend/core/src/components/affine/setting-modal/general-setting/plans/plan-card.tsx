@@ -116,9 +116,8 @@ const ActionButton = ({ detail, recurring }: PlanCardProps) => {
   //    if isCurrent
   //      if canceled                           => 'Resume'
   //      else                                  => 'Current Plan'
-  //    if isCurrent                            => 'Current Plan'
-  //    else if free                            => 'Downgrade'
-  //    else if currentRecurring !== recurring  => 'Change to {recurring} Billing'
+  //    if free                                 => 'Downgrade'
+  //    if currentRecurring !== recurring       => 'Change to {recurring} Billing'
   //    else                                    => 'Upgrade'
 
   // contact
@@ -460,7 +459,7 @@ export const RedeemCode = ({
   recurring = SubscriptionRecurring.Yearly,
   children,
   ...btnProps
-}: ButtonProps & { recurring: SubscriptionRecurring }) => {
+}: ButtonProps & { recurring?: SubscriptionRecurring }) => {
   const t = useI18n();
 
   return (
