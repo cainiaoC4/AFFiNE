@@ -79,6 +79,10 @@ export const getPublicPath = (buildFlags: BuildFlags) => {
     return publicPath;
   }
 
+  if (buildFlags.distribution === 'mobile') {
+    return '/mobile/';
+  }
+
   if (BUILD_TYPE === 'canary') {
     return `https://dev.affineassets.com/`;
   } else if (BUILD_TYPE === 'beta' || BUILD_TYPE === 'stable') {
