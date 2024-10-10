@@ -53,7 +53,7 @@ export class DocRendererController {
       );
       const mobileConfigMapsPath = join(
         this.config.projectRoot,
-        this.config.isSelfhosted ? 'static/selfhost/mobile' : 'static/mobile',
+        this.config.isSelfhosted ? 'static/mobile/selfhost' : 'static/mobile',
         'assets-manifest.json'
       );
       this.webAssets = JSON.parse(readFileSync(webConfigMapsPath, 'utf-8'));
@@ -75,9 +75,6 @@ export class DocRendererController {
     @Param('workspaceId') workspaceId: string,
     @Param('docId') docId: string
   ) {
-
-    this.mobileAssets.publicPath = "/mobile/js/" + this.mobileAssets.publicPath;
-
     const assets: HtmlAssets =
       this.config.affine.canary &&
       isMobile({
